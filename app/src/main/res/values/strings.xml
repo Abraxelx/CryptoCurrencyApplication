@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">KRIPTO PARA</string>
+    <string name="BTCName">BITCOIN</string>
+    <string name="BTCPrice">BTCPrice</string>
+    <string name="BTCChange">BTCChange</string>
+    <string name="button">YENILE</string>
+    <string name="BTCHigh">BTCHigh</string>
+    <string name="BTCLow">BTCLow</string>
+    <string name="ETHName">ETHEREUM</string>
+    <string name="ETHPrice">ETHPrice</string>
+    <string name="ETHChange">ETHChange</string>
+    <string name="ETHHigh">ETHHigh</string>
+    <string name="ETHLow">ETHLow</string>
+    <string name="Time">Time</string>
+</resources>

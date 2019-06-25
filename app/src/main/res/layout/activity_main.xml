@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity"
+    android:orientation="vertical"
+    android:background="@drawable/blur">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="                                           " />
+
+    <TextView
+        android:id="@+id/txtTime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/Time"
+        android:textColor="#FFF"
+        android:textStyle="bold"
+        android:gravity="center"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="                                           " />
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/bitcoinicon" />
+    <TextView
+        android:id="@+id/txtNameBTC"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/BTCName"
+        android:textColor="#FFF"
+        android:textStyle="bold"
+        android:gravity="center"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="                                           " />
+
+    <TextView
+        android:id="@+id/txtBTCPrice"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/BTCPrice"
+        android:textColor="#FFF"/>
+
+    <TextView
+        android:id="@+id/txtBTCChange"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/BTCChange"
+        android:textColor="#FFF"/>
+    <TextView
+        android:id="@+id/txtBTCHigh"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/BTCHigh"
+        android:textColor="#FFF"/>
+    <TextView
+        android:id="@+id/txtBTCLow"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/BTCLow"
+        android:textColor="#FFF"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="                                           " />
+
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ethereumicon" />
+
+    <TextView
+        android:id="@+id/txtNameETH"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/ETHName"
+        android:textColor="#FFF"
+        android:textStyle="bold"
+        android:gravity="center"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="                                           " />
+
+    <TextView
+        android:id="@+id/txtETHPrice"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/ETHPrice"
+        android:textColor="#FFF"/>
+
+    <TextView
+        android:id="@+id/txtETHChange"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/ETHChange"
+        android:textColor="#FFF"/>
+    <TextView
+        android:id="@+id/txtETHHigh"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/ETHHigh"
+        android:textColor="#FFF"/>
+    <TextView
+        android:id="@+id/txtETHLow"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/ETHLow"
+        android:textColor="#FFF"/>
+
+
+
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="                                           " />
+
+
+    <Button
+        android:id="@+id/button"
+        style="@style/AppTheme.Button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/button"
+
+        android:drawableRight="@drawable/ic_refresh_black_24dp"/>
+
+</LinearLayout>
