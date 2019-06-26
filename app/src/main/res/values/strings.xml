@@ -12,4 +12,5 @@
     <string name="ETHHigh">ETHHigh</string>
     <string name="ETHLow">ETHLow</string>
     <string name="Time">Time</string>
+    <string name="todo">TODO</string>
 </resources>

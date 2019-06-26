@@ -1,13 +1,11 @@
-package com.example.kazim.myapplication;
+package com.example.abraxel.cryptocurrency;
 
-import android.app.DownloadManager;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -16,18 +14,16 @@ import com.android.volley.Response.ErrorListener;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.gson.JsonObject;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-
-import static com.android.volley.Request.*;
-import static com.android.volley.Request.Method.*;
 
 public class MainActivity extends AppCompatActivity {
     Button btnRefresh;
@@ -46,12 +42,18 @@ public class MainActivity extends AppCompatActivity {
 
     String URL;
     RequestQueue requestQueue;
+    AdView mAdView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        MobileAds.initialize(this, "ca-app-pub-2313560120112536~7960865514");
 
+
+
+        mAdView= findViewById(R.id.adView);
         btnRefresh = findViewById(R.id.button);
         txtTime = findViewById(R.id.txtTime);
 
@@ -70,9 +72,14 @@ public class MainActivity extends AppCompatActivity {
         txtETHLow = findViewById(R.id.txtETHLow);
 
 
-
         requestQueue = Volley.newRequestQueue(this);
         URL = "https://koineks.com/ticker";
+
+
+
+
+
+
 
         DateFormat df = new SimpleDateFormat("d MMMM EEEE yyyy, HH:mm");
         String date = df.format(Calendar.getInstance().getTime());
@@ -96,6 +103,16 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+    }
+
+    @Override
+    public void onResume() {
+
+        super.onResume();
+        if (mAdView!= null) {
+            AdRequest adRequest = new AdRequest.Builder().build();
+            mAdView.loadAd(adRequest);
+        }
     }
 
 
@@ -145,7 +162,7 @@ public class MainActivity extends AppCompatActivity {
                 new ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.e("HATAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa","Error :" + error.toString());
+                        Log.e("HATA","Error :" + error.toString());
                     }
                 });
         requestQueue.add(jsonObjectRequest);

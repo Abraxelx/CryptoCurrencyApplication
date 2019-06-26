@@ -1,4 +1,4 @@
-package com.example.kazim.myapplication;
+package com.example.abraxel.cryptocurrency;
 
 import org.junit.Test;
 
