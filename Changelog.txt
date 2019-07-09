@@ -1,0 +1,4 @@
+V. 1.01
+Added Landscape Mode
+Added support for all resolations (QVGA,  wxga,fwvga
+Refresh button removed

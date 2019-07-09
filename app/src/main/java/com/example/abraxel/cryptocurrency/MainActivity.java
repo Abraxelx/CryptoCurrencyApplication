@@ -24,9 +24,9 @@ import org.json.JSONObject;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
-    Button btnRefresh;
     TextView txtTime;
     TextView txtBTCPrice;
     TextView txtBTCChange;
@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         mAdView= findViewById(R.id.adView);
-        btnRefresh = findViewById(R.id.button);
+       // btnRefresh = findViewById(R.id.button);
         txtTime = findViewById(R.id.txtTime);
 
         //BITCOIN SPACE
@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        DateFormat df = new SimpleDateFormat("d MMMM EEEE yyyy, HH:mm");
+        DateFormat df = new SimpleDateFormat("d MMMM EEEE yyyy, HH:mm", Locale.getDefault());
         String date = df.format(Calendar.getInstance().getTime());
 
         txtTime.setText(date);
@@ -89,18 +89,6 @@ public class MainActivity extends AppCompatActivity {
 
 
         CallRest();
-
-        btnRefresh.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                CallRest();
-                DateFormat df = new SimpleDateFormat("d MMMM EEEE yyyy, HH:mm");
-                String date = df.format(Calendar.getInstance().getTime());
-                txtTime.setText(date);
-            }
-        });
-
-
 
 
     }
@@ -134,27 +122,25 @@ public class MainActivity extends AppCompatActivity {
                             JSONObject jsonObject = response.getJSONObject("BTC");
                             JSONObject jsonObject1 = response.getJSONObject("ETH");
 
-                          //  for(int i = 0; i<jsonObject.length();i++)
-                         //   {
-                               // JSONObject bpi = jsonArray.getJSONObject(i);
+
                                 String BTCprice = jsonObject.getString("current");
                                 String BTCchange = jsonObject.getString("change_percentage");
                                 String BTChigh = jsonObject.getString("high");
                                 String BTClow=jsonObject.getString("low");
-                                txtBTCPrice.setText("Güncel Fiyat : "+ " " +BTCprice +" TL");
-                                txtBTCChange.setText("Değişim(24s) : "+ " " + BTCchange + "%");
-                                txtBTCHigh.setText("En Yüksek(24s) : "+ " " + BTChigh + " TL");
-                                txtBTCLow.setText("En Düşük(24s) : "+ " " + BTClow + " TL");
+                                txtBTCPrice.setText(String.format("%s%s%s%s%s", getString(R.string.CurrentPrice), getString(R.string.Space), BTCprice, getString(R.string.Space), getString(R.string.TurkishLiraSymbol)));
+                                txtBTCChange.setText(String.format("%s%s%s%s", getString(R.string.Changing), getString(R.string.Space), BTCchange, getString(R.string.Percent)));
+                                txtBTCHigh.setText(String.format("%s%s%s%s%s", getString(R.string.High), getString(R.string.Space), BTChigh, getString(R.string.Space), getString(R.string.TurkishLiraSymbol)));
+                                txtBTCLow.setText(String.format("%s%s%s%s%s", getString(R.string.Low), getString(R.string.Space), BTClow, getString(R.string.Space), getString(R.string.TurkishLiraSymbol)));
 
 
                             String ETHprice = jsonObject1.getString("current");
                             String ETHchange = jsonObject1.getString("change_percentage");
                             String ETHhigh = jsonObject1.getString("high");
                             String ETHlow=jsonObject1.getString("low");
-                            txtETHPrice.setText("Güncel Fiyat : "+ " " +ETHprice +" TL");
-                            txtETHChange.setText("Değişim(24s) : "+ " " + ETHchange + "%");
-                            txtETHHigh.setText("En Yüksek(24s) : "+ " " + ETHhigh + " TL");
-                            txtETHLow.setText("En Düşük(24s) : "+ " " + ETHlow + " TL");
+                            txtETHPrice.setText(String.format("%s%s%s%s%s", getString(R.string.CurrentPrice), getString(R.string.Space), ETHprice, getString(R.string.Space), getString(R.string.TurkishLiraSymbol)));
+                            txtETHChange.setText(String.format("%s%s%s%s", getString(R.string.Changing), getString(R.string.Space), ETHchange, getString(R.string.Percent)));
+                            txtETHHigh.setText(String.format("%s%s%s%s%s", getString(R.string.High), getString(R.string.Space), ETHhigh, getString(R.string.Space), getString(R.string.TurkishLiraSymbol)));
+                            txtETHLow.setText(String.format("%s%s%s%s%s", getString(R.string.Low), getString(R.string.Space), ETHlow, getString(R.string.Space), getString(R.string.TurkishLiraSymbol)));
                            // }
                         } catch (JSONException e) {
                             e.printStackTrace();

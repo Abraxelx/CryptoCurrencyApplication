@@ -13,4 +13,11 @@
     <string name="ETHLow">ETHLow</string>
     <string name="Time">Time</string>
     <string name="todo">TODO</string>
+    <string name="CurrentPrice">"Güncel Fiyat : "</string>
+    <string name="TurkishLiraSymbol"> TL</string>
+    <string name="Space">" "</string>
+    <string name="Changing">Değişim(24s) : </string>
+    <string name="High">En Yüksek(24s) : </string>
+    <string name="Low">En Düşük(24s) : </string>
+    <string name="Percent">%</string>
 </resources>
