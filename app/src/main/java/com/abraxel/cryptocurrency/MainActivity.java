@@ -1,10 +1,8 @@
-package com.example.abraxel.cryptocurrency;
+package com.abraxel.cryptocurrency;
 
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.android.volley.Request;
@@ -54,7 +52,6 @@ public class MainActivity extends AppCompatActivity {
 
 
         mAdView= findViewById(R.id.adView);
-       // btnRefresh = findViewById(R.id.button);
         txtTime = findViewById(R.id.txtTime);
 
         //BITCOIN SPACE
@@ -73,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         requestQueue = Volley.newRequestQueue(this);
-        URL = "https://koineks.com/ticker";
+        URL = "https://api.btcturk.com/api/v2/ticker";
 
 
 
