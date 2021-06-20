@@ -44,10 +44,10 @@ public class CurrencyAdapter extends RecyclerView.Adapter<CurrencyAdapter.ViewHo
         holder.currencyImageView.setImageResource(currencies.getLogoResourceId());
         holder.coinName.setText(currencies.getCoinName());
         holder.pair.setText("Birim : " + currencies.getPair());
-        holder.last.setText("Anlık Değer: " + currencies.getLast());
+        holder.last.setText("Anlık Değer: " + currencies.getLast() + " ₺");
         holder.percent.setText("Değişim Yüzdesi : %" + currencies.getDailyPercent());
-        holder.high.setText("En yüksek (24s) : " + currencies.getHigh());
-        holder.low.setText("En düşük (24s) : " + currencies.getLow());
+        holder.high.setText("En yüksek (24s) : " + currencies.getHigh() + " ₺");
+        holder.low.setText("En düşük (24s) : " + currencies.getLow() + " ₺");
 
 
       /*  holder.itemView.setOnClickListener(new View.OnClickListener() {

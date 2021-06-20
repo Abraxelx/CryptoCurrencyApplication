@@ -65,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
         MobileAds.initialize(getApplicationContext(), new OnInitializationCompleteListener() {
             @Override
             public void onInitializationComplete(InitializationStatus initializationStatus) {
+                Toast.makeText(getApplicationContext(), "Ads Test", Toast.LENGTH_LONG).show();
             }
         });
 
@@ -79,11 +80,13 @@ public class MainActivity extends AppCompatActivity {
         mAdView.setAdListener(new AdListener() {
             @Override
             public void onAdLoaded() {
+                Toast.makeText(getApplicationContext(), "loaded", Toast.LENGTH_LONG).show();
             }
 
             @Override
             public void onAdFailedToLoad(LoadAdError adError) {
                 // Code to be executed when an ad request fails.
+                Log.e("AD Error : ",adError.toString());
             }
 
             @Override
@@ -101,6 +104,7 @@ public class MainActivity extends AppCompatActivity {
             public void onAdClosed() {
                 // Code to be executed when the user is about to return
                 // to the app after tapping on an ad.
+                Toast.makeText(getApplicationContext(), "closed", Toast.LENGTH_LONG).show();
             }
         });
 
