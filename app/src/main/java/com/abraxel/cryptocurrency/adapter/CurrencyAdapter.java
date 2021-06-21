@@ -4,29 +4,26 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.abraxel.cryptocurrency.MainActivity;
 import com.abraxel.cryptocurrency.R;
 import com.abraxel.cryptocurrency.model.CryptoCurrencies;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdSize;
-import com.google.android.gms.ads.AdView;
-
+import java.util.ArrayList;
 import java.util.List;
 
-public class CurrencyAdapter extends RecyclerView.Adapter<CurrencyAdapter.ViewHolder>{
+public class CurrencyAdapter extends RecyclerView.Adapter<CurrencyAdapter.ViewHolder> implements Filterable {
 
     List<CryptoCurrencies> cryptoCurrencies;
+    List<CryptoCurrencies> allCurrencies;
     Context context;
     public CurrencyAdapter(List<CryptoCurrencies> cryptoCurrencies, Context context) {
         this.cryptoCurrencies = cryptoCurrencies;
         this.context = context;
+        this.allCurrencies = new ArrayList<>(cryptoCurrencies);
     }
 
     @NonNull
@@ -66,6 +63,40 @@ public class CurrencyAdapter extends RecyclerView.Adapter<CurrencyAdapter.ViewHo
         return cryptoCurrencies == null ? 0 : cryptoCurrencies.size();
     }
 
+    @Override
+    public Filter getFilter() {
+        return filter;
+    }
+    Filter filter = new Filter() {
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+
+            List<CryptoCurrencies> filteredList = new ArrayList<>();
+            final FilterResults filterResults = new FilterResults();
+
+
+            if(constraint.toString().isEmpty()){
+                filteredList.addAll(cryptoCurrencies);
+            }else {
+                final String filterPattern = constraint.toString().toLowerCase().trim();
+                for (CryptoCurrencies currency: cryptoCurrencies){
+                    if(currency.getCoinName().toLowerCase().contains(filterPattern)){
+                        filteredList.add(currency);
+                    }
+                }
+            }
+
+            filterResults.values = filteredList;
+            return filterResults;
+        }
+
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            cryptoCurrencies = (List<CryptoCurrencies>) results.values;
+            notifyDataSetChanged();
+        }
+    };
+
     public class ViewHolder extends RecyclerView.ViewHolder{
 
         ImageView currencyImageView;
@@ -87,4 +118,5 @@ public class CurrencyAdapter extends RecyclerView.Adapter<CurrencyAdapter.ViewHo
             low = itemView.findViewById(R.id.low);
         }
     }
+
 }

@@ -1,16 +1,19 @@
 package com.abraxel.cryptocurrency;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.app.ProgressDialog;
+import android.app.SearchManager;
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
-import android.widget.Toast;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 
 import com.abraxel.cryptocurrency.adapter.CurrencyAdapter;
 import com.abraxel.cryptocurrency.model.CryptoCurrencies;
@@ -34,18 +37,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
-import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
 
 
-    String URL;
+    private final String URL = "https://api.btcturk.com/api/v2/ticker";
     private RequestQueue requestQueue;
     private DividerItemDecoration dividerItemDecoration;
     private LinearLayoutManager linearLayoutManager;
@@ -53,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private SwipeRefreshLayout swipeRefreshLayout;
     private AdView mAdView;
+    List<CryptoCurrencies> cryptoCurrenciesList;
 
 
 
@@ -65,7 +65,6 @@ public class MainActivity extends AppCompatActivity {
         MobileAds.initialize(getApplicationContext(), new OnInitializationCompleteListener() {
             @Override
             public void onInitializationComplete(InitializationStatus initializationStatus) {
-                Toast.makeText(getApplicationContext(), "Ads Test", Toast.LENGTH_LONG).show();
             }
         });
 
@@ -80,13 +79,11 @@ public class MainActivity extends AppCompatActivity {
         mAdView.setAdListener(new AdListener() {
             @Override
             public void onAdLoaded() {
-                Toast.makeText(getApplicationContext(), "loaded", Toast.LENGTH_LONG).show();
             }
 
             @Override
             public void onAdFailedToLoad(LoadAdError adError) {
                 // Code to be executed when an ad request fails.
-                Log.e("AD Error : ",adError.toString());
             }
 
             @Override
@@ -104,28 +101,18 @@ public class MainActivity extends AppCompatActivity {
             public void onAdClosed() {
                 // Code to be executed when the user is about to return
                 // to the app after tapping on an ad.
-                Toast.makeText(getApplicationContext(), "closed", Toast.LENGTH_LONG).show();
             }
         });
-
-
-
-
 
 
 
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
 
         requestQueue = Volley.newRequestQueue(this);
-        URL = "https://api.btcturk.com/api/v2/ticker";
 
 
 
-        DateFormat df = new SimpleDateFormat("d MMMM EEEE yyyy, HH:mm", Locale.getDefault());
-        String date = df.format(Calendar.getInstance().getTime());
-
-
-        List<CryptoCurrencies> cryptoCurrenciesList = CallRest();
+        cryptoCurrenciesList = CallRest();
         currencyAdapter = new CurrencyAdapter(cryptoCurrenciesList, getApplicationContext());
         linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -147,8 +134,30 @@ public class MainActivity extends AppCompatActivity {
                 swipeRefreshLayout.setRefreshing(false);
             }
         });
+    }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu){
+        getMenuInflater().inflate(R.menu.search_menu, menu);
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) searchItem.getActionView();
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        searchView.setQueryHint("ARA");
 
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                currencyAdapter.getFilter().filter(newText);
+                return false;
+            }
+        });
+        return true;
     }
 
     @Override
@@ -160,7 +169,6 @@ public class MainActivity extends AppCompatActivity {
             mAdView.loadAd(adRequest);
         }
     }
-
 
 
     public List<CryptoCurrencies> CallRest() {
@@ -440,7 +448,6 @@ public class MainActivity extends AppCompatActivity {
                 new ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.e("HATA","Error :" + error.toString());
                         progressDialog.dismiss();
                     }
                 });
@@ -461,4 +468,6 @@ public class MainActivity extends AppCompatActivity {
         Context context = getApplicationContext();
         return context.getResources().getIdentifier(imageName, "drawable", context.getPackageName());
     }
+
+
 }
