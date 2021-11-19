@@ -1,13 +1,15 @@
 package com.abraxel.cryptocurrency.adapter;
 
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Color;
+import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Filter;
-import android.widget.Filterable;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.*;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.abraxel.cryptocurrency.R;
@@ -42,18 +44,31 @@ public class CurrencyAdapter extends RecyclerView.Adapter<CurrencyAdapter.ViewHo
         holder.coinName.setText(currencies.getCoinName());
         holder.pair.setText("Birim : " + currencies.getPair());
         holder.last.setText("Anlık Değer: " + currencies.getLast() + " ₺");
-        holder.percent.setText("Değişim Yüzdesi : %" + currencies.getDailyPercent());
+
+        SpannableStringBuilder builder = new SpannableStringBuilder();
+        SpannableString string1 = new SpannableString("Değişim Yüzdesi : ");
+        builder.append(string1);
+        SpannableString string2 = new SpannableString("%" +currencies.getDailyPercent());
+
+        if(!currencies.getDailyPercent().contains("-")){
+            string2.setSpan(new ForegroundColorSpan(Color.parseColor("#006600")),0,string2.length(),0);
+        }else{
+            string2.setSpan(new ForegroundColorSpan(Color.RED),0,string2.length(),0);
+        }
+        builder.append(string2);
+        holder.percent.setText(builder, TextView.BufferType.SPANNABLE);
         holder.high.setText("En yüksek (24s) : " + currencies.getHigh() + " ₺");
         holder.low.setText("En düşük (24s) : " + currencies.getLow() + " ₺");
 
 
-      /*  holder.itemView.setOnClickListener(new View.OnClickListener() {
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(context, currencies.getPair(), Toast.LENGTH_LONG).show();
+             //   Intent reminderAct = new Intent(view.getContext(), CoinRemindeActivity.class);
+               // view.getContext().startActivity(reminderAct);
+                Toast.makeText(view.getContext(), "HELLO", Toast.LENGTH_LONG).show();
             }
         });
-       */
 
 
     }
