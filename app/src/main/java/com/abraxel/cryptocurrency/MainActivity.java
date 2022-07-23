@@ -28,6 +28,7 @@ import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.MobileAds;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONException;
 
@@ -35,17 +36,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-    private Context context;
 
-    private final String URL = "https://api.btcturk.com/api/v2/ticker";
     private RequestQueue requestQueue;
-    private DividerItemDecoration dividerItemDecoration;
-    private LinearLayoutManager linearLayoutManager;
     private CurrencyAdapter currencyAdapter;
     private RecyclerView recyclerView;
     private SwipeRefreshLayout swipeRefreshLayout;
     private AdView mAdView;
-    private ProgressBar progressBar;
+    public ProgressBar progressBar;
     List<CryptoCurrencies> cryptoCurrenciesList;
     MethodServer methodServer;
 
@@ -54,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        context = getApplicationContext();
+        Context context = getApplicationContext();
         methodServer = new MethodServer(context);
 
 
@@ -75,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onAdFailedToLoad(LoadAdError adError) {
+            public void onAdFailedToLoad(@NotNull LoadAdError adError) {
                 // Code to be executed when an ad request fails.
             }
 
@@ -105,10 +102,10 @@ public class MainActivity extends AppCompatActivity {
 
         cryptoCurrenciesList = CallRest();
         currencyAdapter = new CurrencyAdapter(cryptoCurrenciesList, getApplicationContext());
-        linearLayoutManager = new LinearLayoutManager(this);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView = findViewById(R.id.recycleView);
-        dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), linearLayoutManager.getOrientation());
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), linearLayoutManager.getOrientation());
         recyclerView.addItemDecoration(dividerItemDecoration);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(linearLayoutManager);
@@ -153,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if(id == R.id.action_alarm){
-            Toast.makeText(this, "ALARMM!!", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "ALARM!!", Toast.LENGTH_LONG).show();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -175,6 +172,7 @@ public class MainActivity extends AppCompatActivity {
         requestQueue = Volley.newRequestQueue(getApplicationContext());
         final List<CryptoCurrencies> cryptoCurrenciesList = new ArrayList<>();
 
+        final String URL = "https://api.btcturk.com/api/v2/ticker";
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                 Request.Method.GET,
                 URL,
@@ -182,10 +180,7 @@ public class MainActivity extends AppCompatActivity {
                 response -> {
                     try {
                         JSONArray data = response.getJSONArray("data");
-
                         methodServer.cryptoSetter(data, cryptoCurrenciesList);
-
-
                     } catch (JSONException e) {
                         e.printStackTrace();
                         progressBar.setVisibility(View.GONE);

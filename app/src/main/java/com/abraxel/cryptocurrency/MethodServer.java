@@ -5,7 +5,6 @@ import com.abraxel.cryptocurrency.model.CryptoCurrencies;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.util.List;
 
 public class MethodServer extends MainActivity {
@@ -260,6 +259,8 @@ public class MethodServer extends MainActivity {
         Context context = mContext;
         return context.getResources().getIdentifier(imageName, "drawable", context.getPackageName());
     }
+
+
 
 
 }

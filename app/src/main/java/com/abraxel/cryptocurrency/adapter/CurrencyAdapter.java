@@ -3,6 +3,7 @@ package com.abraxel.cryptocurrency.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.CountDownTimer;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
@@ -12,7 +13,9 @@ import android.view.ViewGroup;
 import android.widget.*;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import com.abraxel.cryptocurrency.CoinReminderActivity;
 import com.abraxel.cryptocurrency.R;
+import com.abraxel.cryptocurrency.constants.Constants;
 import com.abraxel.cryptocurrency.model.CryptoCurrencies;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +25,7 @@ public class CurrencyAdapter extends RecyclerView.Adapter<CurrencyAdapter.ViewHo
     List<CryptoCurrencies> cryptoCurrencies;
     List<CryptoCurrencies> allCurrencies;
     Context context;
+    CountDownTimer countDownTimer;
     public CurrencyAdapter(List<CryptoCurrencies> cryptoCurrencies, Context context) {
         this.cryptoCurrencies = cryptoCurrencies;
         this.context = context;
@@ -33,8 +37,7 @@ public class CurrencyAdapter extends RecyclerView.Adapter<CurrencyAdapter.ViewHo
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
         View view = layoutInflater.inflate(R.layout.crypto_item_list, parent, false);
-        ViewHolder viewHolder = new ViewHolder(view);
-        return viewHolder;
+        return new ViewHolder(view);
     }
 
     @Override
@@ -61,13 +64,12 @@ public class CurrencyAdapter extends RecyclerView.Adapter<CurrencyAdapter.ViewHo
         holder.low.setText("En düşük (24s) : " + currencies.getLow() + " ₺");
 
 
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-             //   Intent reminderAct = new Intent(view.getContext(), CoinRemindeActivity.class);
-               // view.getContext().startActivity(reminderAct);
-                Toast.makeText(view.getContext(), "HELLO", Toast.LENGTH_LONG).show();
-            }
+        holder.itemView.setOnClickListener(view -> {
+
+                    Intent reminderActivity = new Intent(view.getContext(), CoinReminderActivity.class);
+                    reminderActivity.putExtra(Constants.COIN_NAME, currencies.getCoinName().toLowerCase());
+                    view.getContext().startActivity(reminderActivity);
+
         });
 
 
@@ -82,7 +84,8 @@ public class CurrencyAdapter extends RecyclerView.Adapter<CurrencyAdapter.ViewHo
     public Filter getFilter() {
         return filter;
     }
-    Filter filter = new Filter() {
+
+    final Filter filter = new Filter() {
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
 
@@ -90,12 +93,12 @@ public class CurrencyAdapter extends RecyclerView.Adapter<CurrencyAdapter.ViewHo
             final FilterResults filterResults = new FilterResults();
 
 
-            if(constraint.toString().isEmpty()){
+            if (constraint.toString().isEmpty()) {
                 filteredList.addAll(cryptoCurrencies);
-            }else {
+            } else {
                 final String filterPattern = constraint.toString().toLowerCase().trim();
-                for (CryptoCurrencies currency: cryptoCurrencies){
-                    if(currency.getCoinName().toLowerCase().contains(filterPattern)){
+                for (CryptoCurrencies currency : cryptoCurrencies) {
+                    if (currency.getCoinName().toLowerCase().contains(filterPattern)) {
                         filteredList.add(currency);
                     }
                 }
@@ -112,7 +115,7 @@ public class CurrencyAdapter extends RecyclerView.Adapter<CurrencyAdapter.ViewHo
         }
     };
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    public static class ViewHolder extends RecyclerView.ViewHolder{
 
         ImageView currencyImageView;
         TextView coinName;
