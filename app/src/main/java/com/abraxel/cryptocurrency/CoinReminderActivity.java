@@ -1,7 +1,9 @@
 package com.abraxel.cryptocurrency;
 
 import android.graphics.Color;
+import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
@@ -24,18 +26,14 @@ import org.jetbrains.annotations.Nullable;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 public class CoinReminderActivity extends AppCompatActivity {
 
     private LineChart lineChart;
-    private String trying = "Trying Cryptos";
+    private TextView coinNameReminder;
+    private String trying = "Değişim Trendi";
     private static RequestQueue requestQueue;
     public static List<ChartData> chartDataList = new ArrayList<>();
 
@@ -45,8 +43,9 @@ public class CoinReminderActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_coin_reminder);
         getVolleyResponse();
-
+        this.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         lineChart = findViewById(R.id.line_chart);
+        coinNameReminder = findViewById(R.id.remind_coin_name);
 
     }
 
@@ -68,14 +67,14 @@ public class CoinReminderActivity extends AppCompatActivity {
                         }
 
                         List<Entry> lineList = new ArrayList<>();
-                        for(int i = 0; i< chartDataList.size(); i++){
-                            if(i % 10 ==0){
+                        for (int i = 0; i < chartDataList.size(); i++) {
+                            if (i % 10 == 0) {
                                 ChartData chartData = chartDataList.get(i);
                                 lineList.add(new Entry(chartData.getTimeStamp(), (float) chartData.getCost()));
                             }
 
                         }
-                        drawLineChart(lineList);
+                        drawLineChart(lineList, getCoinName());
 
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -87,64 +86,6 @@ public class CoinReminderActivity extends AppCompatActivity {
         requestQueue.add(req);
         return chartDataList;
 
-
-        /*
-        progressBar.setVisibility(View.VISIBLE);
-        MyVolleyRequest.getInstance(CoinReminderActivity.this, chartDataList,
-                        response -> {
-                            chartDataList = new ArrayList<>();
-                            ChartData chartData = new ChartData();
-                            try {
-                                JSONArray prices = response.getJSONArray("prices");
-                                for(int i = 0; i< prices.length(); i++){
-                                    JSONArray jsonArray = prices.getJSONArray(i);
-                                    chartData.setTimeStamp(timeStampConverter(jsonArray.getString(0)));
-                                    chartData.setCost(jsonArray.getDouble(1));
-                                    chartDataList.add(chartData);
-                        }
-
-                            } catch (JSONException e) {
-                                progressBar.setVisibility(View.GONE);
-                                e.printStackTrace();
-                            }
-                            return null;
-                        })
-                .getRequest(urlCreator(getCoinName()));
-
-         */
-    }
-
-
-    private void callChartList() {
-
-      /*
-        requestQueue = Volley.newRequestQueue(getApplicationContext());
-        final List<ChartData> chartDataList = new ArrayList<>();
-        RequestFuture<JSONArray> future = RequestFuture.newFuture();
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, urlCreator(getCoinName()), null, null, future);
-        requestQueue.add(request);
-
-        try {
-            JSONArray response = null;
-            while (response == null){
-                try {
-                    response = future.get();
-                }catch (InterruptedException e){
-                    Thread.currentThread().interrupt();
-                }
-            }
-            Log.i("RESPONSE : ", response.getString(Integer.parseInt("prices")));
-        }catch (ExecutionException executionException){
-            ((Response.ErrorListener) error -> {
-            }).onErrorResponse(new VolleyError(executionException));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-
-
-
- */
     }
 
 
@@ -157,13 +98,13 @@ public class CoinReminderActivity extends AppCompatActivity {
     }
 
 
-    private void drawLineChart(List<Entry> lineList) {
+    private void drawLineChart(List<Entry> lineList, String coinName) {
+        coinNameReminder.setText(coinNameFormatter(coinName));
         Description description = new Description();
         description.setText(trying);
         lineChart.setDescription(description);
-        LineDataSet lineDataSet = new LineDataSet(lineList, "Test");
-        lineDataSet.setValueFormatter(new LineChartXAxisFormatter());
-        lineDataSet.setFillAlpha(110);
+        lineChart.getXAxis().setValueFormatter(new LineChartXAxisFormatter());
+        LineDataSet lineDataSet = new LineDataSet(lineList, coinNameFormatter(coinName) +" 7 Günlük Değişim Grafiği");
         lineDataSet.setColors(ColorTemplate.COLORFUL_COLORS);
         lineDataSet.setMode(LineDataSet.Mode.CUBIC_BEZIER);
         lineDataSet.setDrawFilled(true);
@@ -171,7 +112,7 @@ public class CoinReminderActivity extends AppCompatActivity {
 
         LineData lineData = new LineData(lineDataSet);
         lineChart.setData(lineData);
-        lineData.setValueTextSize(20f);
+        lineData.setValueTextSize(10f);
         lineData.setValueTextColor(Color.BLACK);
         lineChart.invalidate();
     }
@@ -180,6 +121,10 @@ public class CoinReminderActivity extends AppCompatActivity {
         String beginURL = "https://api.coingecko.com/api/v3/coins/";
         String finalQueue = "/market_chart?vs_currency=try&days=7";
         return beginURL + coinName + finalQueue;
+    }
+
+    private String coinNameFormatter(String coinName){
+        return coinName.substring(0,1).toUpperCase() + coinName.substring(1);
     }
 
 }
