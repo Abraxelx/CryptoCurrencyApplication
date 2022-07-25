@@ -260,7 +260,4 @@ public class MethodServer extends MainActivity {
         return context.getResources().getIdentifier(imageName, "drawable", context.getPackageName());
     }
 
-
-
-
 }

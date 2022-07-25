@@ -13,8 +13,7 @@ import android.widget.*;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.abraxel.cryptocurrency.CoinReminderActivity;
+import com.abraxel.cryptocurrency.ChartDataActivity;
 import com.abraxel.cryptocurrency.R;
 import com.abraxel.cryptocurrency.constants.Constants;
 import com.abraxel.cryptocurrency.model.CryptoCurrencies;

@@ -3,12 +3,12 @@ package com.abraxel.cryptocurrency;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
+import com.abraxel.cryptocurrency.interfaces.IVolley;
 import com.abraxel.cryptocurrency.model.ChartData;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-
 import java.util.List;
 
 public class MyVolleyRequest {

@@ -2,11 +2,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <item android:id="@+id/action_alarm"
-          android:title="@string/set_alarm"
-          android:icon="@drawable/baseline_notifications_none_24"
-          app:showAsAction="ifRoom|collapseActionView"/>
-
     <item android:id="@+id/action_search"
           android:title="@string/search"
           android:icon="@drawable/ic_baseline_search_24"

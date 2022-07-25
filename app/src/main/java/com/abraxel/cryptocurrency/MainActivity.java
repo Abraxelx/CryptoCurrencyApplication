@@ -1,5 +1,10 @@
 package com.abraxel.cryptocurrency;
 
+import android.app.AlarmManager;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Intent;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -16,6 +21,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import com.abraxel.cryptocurrency.adapter.CurrencyAdapter;
+import com.abraxel.cryptocurrency.adapter.ReminderBroadcast;
 import com.abraxel.cryptocurrency.model.CryptoCurrencies;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -53,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Context context = getApplicationContext();
         methodServer = new MethodServer(context);
+        createNotificationChannel();
 
 
         MobileAds.initialize(getApplicationContext(), initializationStatus -> {
@@ -147,12 +154,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        int id = item.getItemId();
-
-        if(id == R.id.action_alarm){
-            Toast.makeText(this, "ALARM!!", Toast.LENGTH_LONG).show();
-            return true;
-        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -199,6 +200,19 @@ public class MainActivity extends AppCompatActivity {
         super.onStop();
         if (requestQueue != null) {
             requestQueue.cancelAll("T");
+        }
+    }
+
+    private void createNotificationChannel(){
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            CharSequence name = "abraxelReminderChannel";
+            String description = "Channel for Kripto Para";
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+            NotificationChannel channel = null;
+            channel = new NotificationChannel("cryptocurrency", name, importance);
+            channel.setDescription(description);
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
         }
     }
 
