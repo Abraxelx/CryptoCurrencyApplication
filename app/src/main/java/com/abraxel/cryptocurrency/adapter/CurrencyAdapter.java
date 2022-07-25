@@ -3,7 +3,6 @@ package com.abraxel.cryptocurrency.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.os.CountDownTimer;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
@@ -11,12 +10,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.abraxel.cryptocurrency.CoinReminderActivity;
 import com.abraxel.cryptocurrency.R;
 import com.abraxel.cryptocurrency.constants.Constants;
 import com.abraxel.cryptocurrency.model.CryptoCurrencies;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,7 +27,7 @@ public class CurrencyAdapter extends RecyclerView.Adapter<CurrencyAdapter.ViewHo
     List<CryptoCurrencies> cryptoCurrencies;
     List<CryptoCurrencies> allCurrencies;
     Context context;
-    CountDownTimer countDownTimer;
+
     public CurrencyAdapter(List<CryptoCurrencies> cryptoCurrencies, Context context) {
         this.cryptoCurrencies = cryptoCurrencies;
         this.context = context;
@@ -51,12 +53,12 @@ public class CurrencyAdapter extends RecyclerView.Adapter<CurrencyAdapter.ViewHo
         SpannableStringBuilder builder = new SpannableStringBuilder();
         SpannableString string1 = new SpannableString("Değişim Yüzdesi : ");
         builder.append(string1);
-        SpannableString string2 = new SpannableString("%" +currencies.getDailyPercent());
+        SpannableString string2 = new SpannableString("%" + currencies.getDailyPercent());
 
-        if(!currencies.getDailyPercent().contains("-")){
-            string2.setSpan(new ForegroundColorSpan(Color.parseColor("#006600")),0,string2.length(),0);
-        }else{
-            string2.setSpan(new ForegroundColorSpan(Color.RED),0,string2.length(),0);
+        if (!currencies.getDailyPercent().contains("-")) {
+            string2.setSpan(new ForegroundColorSpan(Color.parseColor("#006600")), 0, string2.length(), 0);
+        } else {
+            string2.setSpan(new ForegroundColorSpan(Color.RED), 0, string2.length(), 0);
         }
         builder.append(string2);
         holder.percent.setText(builder, TextView.BufferType.SPANNABLE);
@@ -66,12 +68,11 @@ public class CurrencyAdapter extends RecyclerView.Adapter<CurrencyAdapter.ViewHo
 
         holder.itemView.setOnClickListener(view -> {
 
-                    Intent reminderActivity = new Intent(view.getContext(), CoinReminderActivity.class);
-                    reminderActivity.putExtra(Constants.COIN_NAME, currencies.getCoinName().toLowerCase());
-                    view.getContext().startActivity(reminderActivity);
+            Intent reminderActivity = new Intent(view.getContext(), CoinReminderActivity.class);
+            reminderActivity.putExtra(Constants.COIN_NAME, currencies.getCoinName().toLowerCase());
+            view.getContext().startActivity(reminderActivity);
 
         });
-
 
     }
 
@@ -115,7 +116,7 @@ public class CurrencyAdapter extends RecyclerView.Adapter<CurrencyAdapter.ViewHo
         }
     };
 
-    public static class ViewHolder extends RecyclerView.ViewHolder{
+    public static class ViewHolder extends RecyclerView.ViewHolder {
 
         ImageView currencyImageView;
         TextView coinName;

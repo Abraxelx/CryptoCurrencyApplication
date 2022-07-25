@@ -1,9 +1,11 @@
 package com.abraxel.cryptocurrency;
 
 import android.graphics.Color;
+import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
@@ -26,6 +28,8 @@ import org.jetbrains.annotations.Nullable;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +37,7 @@ public class CoinReminderActivity extends AppCompatActivity {
 
     private LineChart lineChart;
     private TextView coinNameReminder;
+    private List<Entry> lineList = new ArrayList<>();
     private String trying = "Değişim Trendi";
     private static RequestQueue requestQueue;
     public static List<ChartData> chartDataList = new ArrayList<>();
@@ -59,19 +64,19 @@ public class CoinReminderActivity extends AppCompatActivity {
                     try {
                         JSONArray arr = response.getJSONArray("prices");
                         for (int i = 0; i < arr.length(); i++) {
-                            JSONArray jsonArray = arr.getJSONArray(i);
-                            ChartData chartData = new ChartData();
-                            chartData.setTimeStamp(jsonArray.getLong(0));
-                            chartData.setCost((int) jsonArray.getDouble(1));
-                            chartDataList.add(chartData);
+                            if (i % 15 == 0) {
+                                JSONArray jsonArray = arr.getJSONArray(i);
+                                ChartData chartData = new ChartData();
+                                chartData.setTimeStamp(jsonArray.getLong(0));
+                                chartData.setCost(jsonArray.getDouble(1));
+                                chartDataList.add(chartData);
+                            }
                         }
 
-                        List<Entry> lineList = new ArrayList<>();
                         for (int i = 0; i < chartDataList.size(); i++) {
-                            if (i % 10 == 0) {
-                                ChartData chartData = chartDataList.get(i);
-                                lineList.add(new Entry(chartData.getTimeStamp(), (float) chartData.getCost()));
-                            }
+                            ChartData chartData = chartDataList.get(i);
+                            float formattedVal = getFormattedVal(chartData);
+                            lineList.add(new Entry(chartData.getTimeStamp(), formattedVal));
 
                         }
                         drawLineChart(lineList, getCoinName());
@@ -89,11 +94,34 @@ public class CoinReminderActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    public void onBackPressed() {
+        clearChartDatas();
+        super.onBackPressed();
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                clearChartDatas();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     @Nullable
     private String getCoinName() {
         String coinName;
         Bundle extras = getIntent().getExtras();
         coinName = extras.getString(Constants.COIN_NAME);
+        if (coinName.equals("avalanche")) {
+            return coinName.concat("-2");
+        } else if (coinName.equals("usd coin")) {
+            String[] s = coinName.split(" ");
+            return s[0].concat("-").concat(s[1]);
+        }
         return coinName;
     }
 
@@ -104,7 +132,7 @@ public class CoinReminderActivity extends AppCompatActivity {
         description.setText(trying);
         lineChart.setDescription(description);
         lineChart.getXAxis().setValueFormatter(new LineChartXAxisFormatter());
-        LineDataSet lineDataSet = new LineDataSet(lineList, coinNameFormatter(coinName) +" 7 Günlük Değişim Grafiği");
+        LineDataSet lineDataSet = new LineDataSet(lineList, coinNameFormatter(coinName) + " 7 Günlük Değişim Grafiği");
         lineDataSet.setColors(ColorTemplate.COLORFUL_COLORS);
         lineDataSet.setMode(LineDataSet.Mode.CUBIC_BEZIER);
         lineDataSet.setDrawFilled(true);
@@ -123,8 +151,24 @@ public class CoinReminderActivity extends AppCompatActivity {
         return beginURL + coinName + finalQueue;
     }
 
-    private String coinNameFormatter(String coinName){
-        return coinName.substring(0,1).toUpperCase() + coinName.substring(1);
+    private String coinNameFormatter(String coinName) {
+        coinName = coinName.replace("-", " ");
+        return coinName.substring(0, 1).toUpperCase() + coinName.substring(1);
+    }
+
+    private float getFormattedVal(ChartData chartData) {
+        DecimalFormat decimalFormat = new DecimalFormat("#.###");
+        decimalFormat.setRoundingMode(RoundingMode.CEILING);
+        float formattedVal = (float) chartData.getCost();
+        return formattedVal;
+    }
+
+    private void clearChartDatas() {
+        lineList.clear();
+        chartDataList.clear();
+        lineChart.invalidate();
+        lineChart.getLineData().clearValues();
+        lineChart.clear();
     }
 
 }
