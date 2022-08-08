@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "360451584152",
+    "project_id": "currency-android-app",
+    "storage_bucket": "currency-android-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:360451584152:android:c08d01a44ffae1cadb20ed",
+        "android_client_info": {
+          "package_name": "com.abraxel.cryptocurrency"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "360451584152-eflkpjae8eu3b6g18fu6qb35k5tcdnuo.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.abraxel.cryptocurrency",
+            "certificate_hash": "eec368612797bdf81913d7bd97ba37ab132eaf2d"
+          }
+        },
+        {
+          "client_id": "360451584152-1l44it7d7i5guhmn8scqvd3qa442e6tr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCB39ZQoViaRY5T5EhyxhC7Oq2zX-fJk8c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "360451584152-1l44it7d7i5guhmn8scqvd3qa442e6tr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

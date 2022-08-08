@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.abraxel.cryptocurrency.ChartDataActivity;
 import com.abraxel.cryptocurrency.R;
+import com.abraxel.cryptocurrency.RemindMeActivity;
 import com.abraxel.cryptocurrency.constants.Constants;
 import com.abraxel.cryptocurrency.model.CryptoCurrencies;
 
@@ -64,12 +65,19 @@ public class CurrencyAdapter extends RecyclerView.Adapter<CurrencyAdapter.ViewHo
         holder.high.setText("En yüksek (24s) : " + currencies.getHigh() + " ₺");
         holder.low.setText("En düşük (24s) : " + currencies.getLow() + " ₺");
 
+        holder.remindMe.setOnClickListener((View view) ->{
+            Intent remindMeActivity = new Intent(view.getContext(), RemindMeActivity.class);
+            remindMeActivity.putExtra(Constants.COIN_NAME, currencies.getCoinName());
+            remindMeActivity.putExtra(Constants.COIN_VALUE, Double.valueOf(currencies.getLast()));
+            remindMeActivity.putExtra(Constants.COIN_LOGO, currencies.getLogoResourceId());
+            view.getContext().startActivity(remindMeActivity);
+        });
+
 
         holder.itemView.setOnClickListener(view -> {
-
-            Intent reminderActivity = new Intent(view.getContext(), CoinReminderActivity.class);
-            reminderActivity.putExtra(Constants.COIN_NAME, currencies.getCoinName().toLowerCase());
-            view.getContext().startActivity(reminderActivity);
+            Intent chartDataActivity = new Intent(view.getContext(), ChartDataActivity.class);
+            chartDataActivity.putExtra(Constants.COIN_NAME, currencies.getCoinName().toLowerCase());
+            view.getContext().startActivity(chartDataActivity);
 
         });
 
@@ -118,6 +126,7 @@ public class CurrencyAdapter extends RecyclerView.Adapter<CurrencyAdapter.ViewHo
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
         ImageView currencyImageView;
+        Button remindMe;
         TextView coinName;
         TextView pair;
         TextView last;
@@ -134,6 +143,7 @@ public class CurrencyAdapter extends RecyclerView.Adapter<CurrencyAdapter.ViewHo
             percent = itemView.findViewById(R.id.percent);
             high = itemView.findViewById(R.id.high);
             low = itemView.findViewById(R.id.low);
+            remindMe = itemView.findViewById(R.id.remind_me);
         }
     }
 

@@ -1,13 +1,10 @@
 package com.abraxel.cryptocurrency;
 
-import android.app.AlarmManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Intent;
+import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
@@ -21,7 +18,6 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import com.abraxel.cryptocurrency.adapter.CurrencyAdapter;
-import com.abraxel.cryptocurrency.adapter.ReminderBroadcast;
 import com.abraxel.cryptocurrency.model.CryptoCurrencies;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -33,6 +29,7 @@ import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.MobileAds;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -117,6 +114,20 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(currencyAdapter);
+
+
+        FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(task -> {
+                    final String TAG = "MainActivity";
+                    if (!task.isSuccessful()) {
+                        Log.w(TAG, "Fetching FCM registration token failed", task.getException());
+                        return;
+                    }
+                    String token = task.getResult();
+
+                    // Log and toast
+                    Log.d(TAG, token);
+                });
 
 
         swipeRefreshLayout.setOnRefreshListener(() -> {

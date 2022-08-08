@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.abraxel.cryptocurrency">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -10,11 +11,15 @@
         android:icon="@mipmap/ic_launcher_btcicon"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_btc"
+        tools:replace="android:icon"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ChartDataActivity"
-            android:parentActivityName=".MainActivity">
-        </activity>
+        <activity
+            android:name=".RemindMeActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ChartDataActivity"
+            android:parentActivityName=".MainActivity"></activity>
         <activity
             android:name=".MainActivity"
             android:exported="true">
@@ -23,7 +28,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity> <!-- Sample AdMob app ID: ca-app-pub-3940256099942544~3347511713 -->
-        <receiver android:name=".adapter.ReminderBroadcast"/>
+        <receiver android:name=".adapter.ReminderBroadcast" />
+
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-2313560120112536~7960865514" />
