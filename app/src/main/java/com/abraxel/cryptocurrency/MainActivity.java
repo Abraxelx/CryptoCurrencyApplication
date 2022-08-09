@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+    public static String TOKEN;
 
     private RequestQueue requestQueue;
     private CurrencyAdapter currencyAdapter;
@@ -123,10 +124,10 @@ public class MainActivity extends AppCompatActivity {
                         Log.w(TAG, "Fetching FCM registration token failed", task.getException());
                         return;
                     }
-                    String token = task.getResult();
+                    TOKEN = task.getResult();
 
                     // Log and toast
-                    Log.d(TAG, token);
+                    Log.d(TAG, TOKEN);
                 });
 
 

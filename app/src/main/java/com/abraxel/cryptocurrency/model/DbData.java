@@ -8,4 +8,5 @@ import lombok.Data;
 public class DbData implements Serializable {
     private String coinName;
     private int coinVal;
+    private String deviceKey;
 }
