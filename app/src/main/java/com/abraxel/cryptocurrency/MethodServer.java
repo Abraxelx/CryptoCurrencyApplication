@@ -253,6 +253,20 @@ public class MethodServer extends MainActivity {
         avaxTry.setLogoResourceId(getImageResourceId("avax"));
 
         cryptoCurrenciesList.add(avaxTry);
+
+
+        //EOS SECTION
+        CryptoCurrencies eosTry = new CryptoCurrencies();
+        JSONObject EOS = data.getJSONObject(18);
+        eosTry.setCoinName("EOS");
+        eosTry.setPair(EOS.getString("pair"));
+        eosTry.setLast(EOS.getString("last"));
+        eosTry.setHigh(EOS.getString("high"));
+        eosTry.setLow(EOS.getString("low"));
+        eosTry.setDailyPercent(EOS.getString("dailyPercent"));
+        eosTry.setLogoResourceId(getImageResourceId("eos"));
+
+        cryptoCurrenciesList.add(eosTry);
     }
 
     public int getImageResourceId(String imageName) {

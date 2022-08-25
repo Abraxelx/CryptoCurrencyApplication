@@ -1,6 +1,5 @@
 package com.abraxel.cryptocurrency.adapter;
 
-import android.app.Notification;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -14,7 +13,7 @@ public class ReminderBroadcast extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "cryptocurrency")
-                .setSmallIcon(R.drawable.ic_baseline_money_24)
+                .setSmallIcon(R.drawable.ic_stat_monetization_on)
                 .setContentTitle("Kripto Para TL")
                 .setContentTitle("Ayarlanan tutar bilgisi...")
                 .setPriority(NotificationCompat.PRIORITY_HIGH);

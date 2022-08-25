@@ -63,13 +63,8 @@ public class RemindMeActivity extends AppCompatActivity {
                 dbData.setCoinName(coinNameFromBundle);
                 dbData.setCoinVal(Integer.valueOf(valueSetter.getText().toString()));
                 dbData.setDeviceKey(MainActivity.TOKEN);
-                firebaseDatabase.collection(MainActivity.TOKEN).document(coinNameFromBundle.toLowerCase(Locale.ROOT) + "-reminder").set(dbData)
-                        .addOnSuccessListener(unused -> Toast.makeText(getApplicationContext(), getString(R.string.reminder_set_successful), Toast.LENGTH_LONG).show()).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception error) {
-                                Toast.makeText(getApplicationContext(), getString(R.string.data_could_not_be_saved) + error.getMessage(), Toast.LENGTH_LONG).show();
-                            }
-                        });
+                firebaseDatabase.collection("myDB").document(coinNameFromBundle.toLowerCase(Locale.ROOT) + "-reminder").set(dbData)
+                        .addOnSuccessListener(unused -> Toast.makeText(getApplicationContext(), getString(R.string.reminder_set_successful), Toast.LENGTH_LONG).show()).addOnFailureListener(error -> Toast.makeText(getApplicationContext(), getString(R.string.data_could_not_be_saved) + error.getMessage(), Toast.LENGTH_LONG).show());
             }
         });
 
