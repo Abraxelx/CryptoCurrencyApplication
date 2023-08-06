@@ -1,6 +1,8 @@
 package com.abraxel.cryptocurrency.model;
 
 
+import java.io.Serializable;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,7 +10,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CryptoCurrencies {
+
+public class CryptoCurrencies implements Serializable {
     private String coinName;
     private String pair;
     private String last;

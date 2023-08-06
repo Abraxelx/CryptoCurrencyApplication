@@ -1,40 +1,76 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.google.gms.google-services'
 
 android {
-    compileSdkVersion 32
     defaultConfig {
+        compileSdk 33
         applicationId "com.abraxel.cryptocurrency"
         minSdkVersion 21
-        targetSdkVersion 32
-        versionCode 11
-        versionName "4.1.0"
+        targetSdkVersion 33
+        versionCode 13
+        versionName "5.1.0"
         vectorDrawables.useSupportLibrary = true
     }
+    signingConfigs {
+        debug {
+            storeFile file('C:\\Users\\HSahin\\Desktop\\currencyDebug.jks')
+            storePassword 'hayuha12'
+            keyAlias 'key0'
+            keyPassword 'hayuha12'
+        }
+        release {
+            storeFile file('C:\\Users\\HSahin\\Desktop\\myAndroidKey.jks')
+            storePassword 'hayuha12'
+            keyPassword 'hayuha12'
+            keyAlias 'key0'
+        }
+    }
+
+
     buildTypes {
         release {
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
+        debug {
+            signingConfig signingConfigs.debug
         }
     }
     buildFeatures {
         viewBinding true
     }
+    namespace 'com.abraxel.cryptocurrency'
 }
 
 dependencies {
+    constraints {
+        implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.0") {
+            because("kotlin-stdlib-jdk7 is now a part of kotlin-stdlib")
+        }
+        implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.0") {
+            because("kotlin-stdlib-jdk8 is now a part of kotlin-stdlib")
+        }
+    }
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'androidx.appcompat:appcompat:1.4.2'
+    implementation platform('com.google.firebase:firebase-bom:30.3.1')
+    implementation 'com.google.firebase:firebase-firestore:24.7.0'
+    implementation 'com.google.firebase:firebase-messaging:23.2.1'
+    compileOnly('org.projectlombok:lombok:1.18.28')
+    annotationProcessor('org.projectlombok:lombok:1.18.28')
+    implementation 'com.google.firebase:firebase-analytics:21.3.0'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'androidx.cardview:cardview:1.0.0'
-    implementation 'com.google.android.material:material:1.6.1'
-    implementation 'com.squareup.okhttp3:okhttp:4.10.0-RC1'
+    implementation 'com.google.android.material:material:1.9.0'
+    implementation 'com.squareup.okhttp3:okhttp:4.9.1'
     implementation 'com.android.volley:volley:1.2.1'
-    implementation 'com.google.android.gms:play-services-ads:21.1.0'
-    implementation 'androidx.navigation:navigation-fragment:2.5.0'
-    implementation 'androidx.navigation:navigation-ui:2.5.0'
-    compileOnly('org.projectlombok:lombok:1.18.24')
-    annotationProcessor 'org.projectlombok:lombok:1.18.24'
+    implementation 'com.google.android.gms:play-services-ads:22.2.0'
+    implementation 'androidx.navigation:navigation-fragment:2.6.0'
+    implementation 'androidx.navigation:navigation-ui:2.6.0'
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+    implementation 'com.cepheuen.elegant-number-button:lib:1.0.3'
+    implementation "androidx.work:work-runtime:2.8.1"
 }

@@ -1,8 +1,10 @@
 package com.abraxel.cryptocurrency;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
@@ -27,6 +29,7 @@ import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.MobileAds;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -36,6 +39,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+    public static String TOKEN;
 
     private RequestQueue requestQueue;
     private CurrencyAdapter currencyAdapter;
@@ -53,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Context context = getApplicationContext();
         methodServer = new MethodServer(context);
+        createNotificationChannel();
 
 
         MobileAds.initialize(getApplicationContext(), initializationStatus -> {
@@ -100,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
         requestQueue = Volley.newRequestQueue(this);
 
 
-        cryptoCurrenciesList = CallRest();
+        cryptoCurrenciesList = callRest();
         currencyAdapter = new CurrencyAdapter(cryptoCurrenciesList, getApplicationContext());
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -112,8 +117,21 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setAdapter(currencyAdapter);
 
 
+        FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(task -> {
+                    final String TAG = "MainActivity";
+                    if (!task.isSuccessful()) {
+                        Log.w(TAG, "Fetching FCM registration token failed", task.getException());
+                    }
+                    TOKEN = task.getResult();
+
+                    // Log and toast
+                    Log.d(TAG, TOKEN);
+                });
+
+
         swipeRefreshLayout.setOnRefreshListener(() -> {
-            List<CryptoCurrencies> cryptoCurrenciesList = CallRest();
+            List<CryptoCurrencies> cryptoCurrenciesList = callRest();
             currencyAdapter = new CurrencyAdapter(cryptoCurrenciesList, getApplicationContext());
             recyclerView.setAdapter(currencyAdapter);
             currencyAdapter.notifyDataSetChanged();
@@ -122,7 +140,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(@NonNull Menu menu) {
         getMenuInflater().inflate(R.menu.search_menu, menu);
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         MenuItem searchItem = menu.findItem(R.id.action_search);
@@ -147,12 +165,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        int id = item.getItemId();
-
-        if(id == R.id.action_alarm){
-            Toast.makeText(this, "ALARM!!", Toast.LENGTH_LONG).show();
-            return true;
-        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -166,7 +178,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public List<CryptoCurrencies> CallRest() {
+    public List<CryptoCurrencies> callRest() {
 
         progressBar.setVisibility(View.VISIBLE);
         requestQueue = Volley.newRequestQueue(getApplicationContext());
@@ -199,6 +211,19 @@ public class MainActivity extends AppCompatActivity {
         super.onStop();
         if (requestQueue != null) {
             requestQueue.cancelAll("T");
+        }
+    }
+
+    private void createNotificationChannel(){
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            CharSequence name = "abraxelReminderChannel";
+            String description = "Channel for Kripto Para";
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+            NotificationChannel channel;
+            channel = new NotificationChannel("cryptocurrency", name, importance);
+            channel.setDescription(description);
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
         }
     }
 

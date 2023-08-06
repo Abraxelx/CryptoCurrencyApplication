@@ -12,3 +12,7 @@
 
 .idea/
 
+
+app/google-services.json
+
+app/debug/

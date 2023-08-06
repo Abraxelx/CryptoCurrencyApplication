@@ -3,6 +3,7 @@ package com.abraxel.cryptocurrency.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
@@ -13,9 +14,9 @@ import android.widget.*;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.abraxel.cryptocurrency.CoinReminderActivity;
+import com.abraxel.cryptocurrency.ChartDataActivity;
 import com.abraxel.cryptocurrency.R;
+import com.abraxel.cryptocurrency.RemindMeActivity;
 import com.abraxel.cryptocurrency.constants.Constants;
 import com.abraxel.cryptocurrency.model.CryptoCurrencies;
 
@@ -66,11 +67,20 @@ public class CurrencyAdapter extends RecyclerView.Adapter<CurrencyAdapter.ViewHo
         holder.low.setText("En düşük (24s) : " + currencies.getLow() + " ₺");
 
 
-        holder.itemView.setOnClickListener(view -> {
 
-            Intent reminderActivity = new Intent(view.getContext(), CoinReminderActivity.class);
-            reminderActivity.putExtra(Constants.COIN_NAME, currencies.getCoinName().toLowerCase());
-            view.getContext().startActivity(reminderActivity);
+        holder.remindMe.setOnClickListener((View view) ->{
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("reminderData", currencies);
+            Intent remindMeActivity = new Intent(view.getContext(), RemindMeActivity.class);
+            remindMeActivity.putExtras(bundle);
+            view.getContext().startActivity(remindMeActivity);
+        });
+
+
+        holder.itemView.setOnClickListener(view -> {
+            Intent chartDataActivity = new Intent(view.getContext(), ChartDataActivity.class);
+            chartDataActivity.putExtra(Constants.COIN_NAME, currencies.getCoinName().toLowerCase());
+            view.getContext().startActivity(chartDataActivity);
 
         });
 
@@ -119,6 +129,7 @@ public class CurrencyAdapter extends RecyclerView.Adapter<CurrencyAdapter.ViewHo
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
         ImageView currencyImageView;
+        Button remindMe;
         TextView coinName;
         TextView pair;
         TextView last;
@@ -135,6 +146,7 @@ public class CurrencyAdapter extends RecyclerView.Adapter<CurrencyAdapter.ViewHo
             percent = itemView.findViewById(R.id.percent);
             high = itemView.findViewById(R.id.high);
             low = itemView.findViewById(R.id.low);
+            remindMe = itemView.findViewById(R.id.remind_me);
         }
     }
 
