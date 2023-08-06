@@ -1,6 +1,10 @@
 package com.abraxel.cryptocurrency.constants;
 
 public class Constants {
+    private Constants() {
+        throw new IllegalStateException("Constant class");
+    }
+
     public static final String COIN_NAME = "COIN_NAME";
     public static final String COIN_VALUE = "COIN_VALUE";
     public static final String COIN_LOGO = "COIN_LOGO";

@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.window.OnBackInvokedDispatcher;
 
 import com.abraxel.cryptocurrency.constants.Constants;
 import com.abraxel.cryptocurrency.formatter.LineChartXAxisFormatter;
@@ -37,10 +38,10 @@ public class ChartDataActivity extends AppCompatActivity {
 
     private LineChart lineChart;
     private TextView coinNameReminder;
-    private List<Entry> lineList = new ArrayList<>();
-    private String trying = "Değişim Trendi";
+    private final List<Entry> lineList = new ArrayList<>();
+    private final static String trying = "Değişim Trendi";
     private static RequestQueue requestQueue;
-    public static List<ChartData> chartDataList = new ArrayList<>();
+    protected static List<ChartData> chartDataList = new ArrayList<>();
 
 
     @Override
@@ -85,9 +86,7 @@ public class ChartDataActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
                 },
-                error -> {
-                    Toast.makeText(getApplicationContext(), "ERROR", Toast.LENGTH_LONG).show();
-                });
+                error -> Toast.makeText(getApplicationContext(), "ERROR", Toast.LENGTH_LONG).show());
         requestQueue.add(req);
         return chartDataList;
 
@@ -103,10 +102,8 @@ public class ChartDataActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                clearChartDatas();
-                break;
+        if (item.getItemId() == android.R.id.home) {
+            clearChartDatas();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -159,8 +156,7 @@ public class ChartDataActivity extends AppCompatActivity {
     private float getFormattedVal(ChartData chartData) {
         DecimalFormat decimalFormat = new DecimalFormat("#.###");
         decimalFormat.setRoundingMode(RoundingMode.CEILING);
-        float formattedVal = (float) chartData.getCost();
-        return formattedVal;
+        return (float) chartData.getCost();
     }
 
     private void clearChartDatas() {

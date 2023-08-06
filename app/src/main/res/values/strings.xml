@@ -27,4 +27,5 @@
     <string name="btn_text_set_reminder">Hatırlatıcıyı Kur</string>
     <string name="reminder_set_successful">Hatırlatıcı Başarıyla Kuruldu :)</string>
     <string name="data_could_not_be_saved">Veri Kaydedilemedi!</string>
+    <string name="same_value_error">Bildirim gönderilmesi istenen değer, güncel değer ile aynı olamaz.</string>
 </resources>

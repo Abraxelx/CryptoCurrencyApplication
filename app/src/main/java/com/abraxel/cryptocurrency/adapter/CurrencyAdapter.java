@@ -3,6 +3,7 @@ package com.abraxel.cryptocurrency.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
@@ -65,11 +66,13 @@ public class CurrencyAdapter extends RecyclerView.Adapter<CurrencyAdapter.ViewHo
         holder.high.setText("En yüksek (24s) : " + currencies.getHigh() + " ₺");
         holder.low.setText("En düşük (24s) : " + currencies.getLow() + " ₺");
 
+
+
         holder.remindMe.setOnClickListener((View view) ->{
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("reminderData", currencies);
             Intent remindMeActivity = new Intent(view.getContext(), RemindMeActivity.class);
-            remindMeActivity.putExtra(Constants.COIN_NAME, currencies.getCoinName());
-            remindMeActivity.putExtra(Constants.COIN_VALUE, Double.valueOf(currencies.getLast()));
-            remindMeActivity.putExtra(Constants.COIN_LOGO, currencies.getLogoResourceId());
+            remindMeActivity.putExtras(bundle);
             view.getContext().startActivity(remindMeActivity);
         });
 

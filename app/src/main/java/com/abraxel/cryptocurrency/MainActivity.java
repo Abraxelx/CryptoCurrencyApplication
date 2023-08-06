@@ -29,7 +29,6 @@ import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.MobileAds;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.jetbrains.annotations.NotNull;
@@ -37,9 +36,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
     public static String TOKEN;
@@ -108,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
         requestQueue = Volley.newRequestQueue(this);
 
 
-        cryptoCurrenciesList = CallRest();
+        cryptoCurrenciesList = callRest();
         currencyAdapter = new CurrencyAdapter(cryptoCurrenciesList, getApplicationContext());
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -125,7 +122,6 @@ public class MainActivity extends AppCompatActivity {
                     final String TAG = "MainActivity";
                     if (!task.isSuccessful()) {
                         Log.w(TAG, "Fetching FCM registration token failed", task.getException());
-                        return;
                     }
                     TOKEN = task.getResult();
 
@@ -135,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         swipeRefreshLayout.setOnRefreshListener(() -> {
-            List<CryptoCurrencies> cryptoCurrenciesList = CallRest();
+            List<CryptoCurrencies> cryptoCurrenciesList = callRest();
             currencyAdapter = new CurrencyAdapter(cryptoCurrenciesList, getApplicationContext());
             recyclerView.setAdapter(currencyAdapter);
             currencyAdapter.notifyDataSetChanged();
@@ -182,7 +178,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public List<CryptoCurrencies> CallRest() {
+    public List<CryptoCurrencies> callRest() {
 
         progressBar.setVisibility(View.VISIBLE);
         requestQueue = Volley.newRequestQueue(getApplicationContext());
