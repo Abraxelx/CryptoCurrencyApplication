@@ -3,25 +3,25 @@ buildscript {
     repositories {
         google()
         mavenCentral()
-        jcenter()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:8.0.2'
-        classpath 'com.google.gms:google-services:4.3.15'
+        classpath 'com.google.gms:google-services:4.4.2'
     }
 }
 allprojects {
     repositories {
         google()
-        jcenter()
         mavenCentral()
         maven { url 'https://jitpack.io' }
     }
 
     gradle.projectsEvaluated {
-        tasks.withType(JavaCompile) {
-            options.encoding = 'UTF8'
-            options.compilerArgs << "-Xlint:deprecation"
+        tasks.withType(JavaCompile).tap {
+            configureEach {
+                options.encoding = 'UTF8'
+                options.compilerArgs << "-Xlint:deprecation"
+            }
         }
     }
 }
