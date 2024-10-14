@@ -37,16 +37,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/img_reminder" />
 
-    <com.cepheuen.elegantnumberbutton.view.ElegantNumberButton
-        android:id="@+id/btn_elegant_number"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+    <nl.dionsegijn.steppertouch.StepperTouch
+        android:id="@+id/stepperTouch"
+        android:layout_width="340dp"
+        android:layout_height="70dp"
         app:layout_constraintBottom_toBottomOf="@+id/txt_coin_name_reminder"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent="0.08"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/edttxt_value_setter"
-        app:layout_constraintWidth_percent="0.4" />
+        app:layout_constraintWidth_percent="0.4"
+        app:stepperTextSize="5sp" />
 
 
     <EditText

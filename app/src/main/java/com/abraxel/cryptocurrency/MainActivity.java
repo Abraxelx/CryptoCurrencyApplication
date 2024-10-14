@@ -5,6 +5,7 @@ import android.app.NotificationManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
@@ -12,11 +13,13 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import android.app.SearchManager;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+
 import com.abraxel.cryptocurrency.adapter.CurrencyAdapter;
 import com.abraxel.cryptocurrency.model.CryptoCurrencies;
 import com.android.volley.Request;
@@ -37,14 +40,14 @@ import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class MainActivity extends AppCompatActivity {
+    Logger logger = Logger.getLogger(MainActivity.class.getName());
     public static String TOKEN;
 
     private RequestQueue requestQueue;
     private CurrencyAdapter currencyAdapter;
-    private RecyclerView recyclerView;
-    private SwipeRefreshLayout swipeRefreshLayout;
     private AdView mAdView;
     public ProgressBar progressBar;
     List<CryptoCurrencies> cryptoCurrenciesList;
@@ -74,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
         mAdView.setAdListener(new AdListener() {
             @Override
             public void onAdLoaded() {
+                // Code to be executed when an ad finishes loading.
             }
 
             @Override
@@ -99,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
+        SwipeRefreshLayout swipeRefreshLayout;
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
         progressBar = findViewById(R.id.progress_circular);
         requestQueue = Volley.newRequestQueue(this);
@@ -109,6 +113,7 @@ public class MainActivity extends AppCompatActivity {
         currencyAdapter = new CurrencyAdapter(cryptoCurrenciesList, getApplicationContext());
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        RecyclerView recyclerView;
         recyclerView = findViewById(R.id.recycleView);
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), linearLayoutManager.getOrientation());
         recyclerView.addItemDecoration(dividerItemDecoration);
@@ -163,10 +168,6 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        return super.onOptionsItemSelected(item);
-    }
 
     @Override
     public void onResume() {
@@ -182,7 +183,7 @@ public class MainActivity extends AppCompatActivity {
 
         progressBar.setVisibility(View.VISIBLE);
         requestQueue = Volley.newRequestQueue(getApplicationContext());
-        final List<CryptoCurrencies> cryptoCurrenciesList = new ArrayList<>();
+        final List<CryptoCurrencies> ccList = new ArrayList<>();
 
         final String URL = "https://api.btcturk.com/api/v2/ticker";
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
@@ -192,9 +193,9 @@ public class MainActivity extends AppCompatActivity {
                 response -> {
                     try {
                         JSONArray data = response.getJSONArray("data");
-                        methodServer.cryptoSetter(data, cryptoCurrenciesList);
+                        methodServer.cryptoSetter(data, ccList);
                     } catch (JSONException e) {
-                        e.printStackTrace();
+                        logger.warning(e.getMessage());
                         progressBar.setVisibility(View.GONE);
                     }
                     currencyAdapter.notifyDataSetChanged();
@@ -203,7 +204,7 @@ public class MainActivity extends AppCompatActivity {
                 error -> progressBar.setVisibility(View.GONE));
         jsonObjectRequest.setTag("T");
         requestQueue.add(jsonObjectRequest);
-        return cryptoCurrenciesList;
+        return ccList;
     }
 
     @Override
@@ -214,7 +215,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void createNotificationChannel(){
+    private void createNotificationChannel() {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             CharSequence name = "abraxelReminderChannel";
             String description = "Channel for Kripto Para";

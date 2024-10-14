@@ -1,6 +1,5 @@
 package com.abraxel.cryptocurrency;
 
-
 import android.os.Build;
 import android.os.Bundle;
 import android.widget.Button;
@@ -13,10 +12,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.abraxel.cryptocurrency.model.CryptoCurrencies;
 import com.abraxel.cryptocurrency.model.ReminderData;
-import com.cepheuen.elegantnumberbutton.view.ElegantNumberButton;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Locale;
+
+import nl.dionsegijn.steppertouch.StepperTouch;
+
 
 public class RemindMeActivity extends AppCompatActivity {
 
@@ -29,7 +30,7 @@ public class RemindMeActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        ElegantNumberButton elegantNumberButton;
+        StepperTouch stepperTouch;
         Button setReminderButton;
         EditText valueSetter;
         TextView coinName;
@@ -39,7 +40,7 @@ public class RemindMeActivity extends AppCompatActivity {
         coinName = findViewById(R.id.txt_coin_name_reminder);
         valueSetter = findViewById(R.id.edttxt_value_setter);
         setReminderButton = findViewById(R.id.btn_remind_me);
-        elegantNumberButton = findViewById(R.id.btn_elegant_number);
+        stepperTouch = findViewById(R.id.stepperTouch);
         ImageView imageViewReminder = findViewById(R.id.img_reminder);
 
         Bundle receivedBundle = getIntent().getExtras();
@@ -57,9 +58,11 @@ public class RemindMeActivity extends AppCompatActivity {
         int valOfCoinInInt = (int) coinValueFromBundle;
         coinName.setText(coinNameFromBundle);
         valueSetter.setText(String.valueOf(valOfCoinInInt));
-        elegantNumberButton.setNumber(String.valueOf(valOfCoinInInt));
-
-        elegantNumberButton.setOnValueChangeListener((view, oldValue, newValue) -> valueSetter.setText(String.valueOf(newValue)));
+        stepperTouch.setMaxValue(valOfCoinInInt * 10);
+        stepperTouch.setMinValue(0);
+        stepperTouch.setCount(valOfCoinInInt);
+        stepperTouch.setSideTapEnabled(true);
+        stepperTouch.addStepCallback((i, b) -> valueSetter.setText(String.valueOf(i)));
 
 
         setReminderButton.setOnClickListener(view -> {
