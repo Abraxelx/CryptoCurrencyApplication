@@ -14,3 +14,8 @@
 -dontwarn org.apache.**
 -dontwarn com.sun.**
 -dontwarn **retrofit**
+
+# Suppress warnings for LoudnessCodecController
+-dontwarn android.media.LoudnessCodecController$OnLoudnessCodecUpdateListener
+-dontwarn android.media.LoudnessCodecController
+

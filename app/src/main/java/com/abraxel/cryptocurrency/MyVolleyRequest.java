@@ -4,12 +4,10 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
 import com.abraxel.cryptocurrency.interfaces.IVolley;
-import com.abraxel.cryptocurrency.model.ChartData;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import java.util.List;
 
 public class MyVolleyRequest {
     @SuppressLint("StaticFieldLeak")
@@ -25,7 +23,7 @@ public class MyVolleyRequest {
     }
 
 
-    public static synchronized MyVolleyRequest getInstance(Context context, List<ChartData> chartDataList, IVolley iVolley) {
+    public static synchronized MyVolleyRequest getInstance(Context context, IVolley iVolley) {
         mInstance = new MyVolleyRequest(context, iVolley);
         return mInstance;
     }
@@ -45,7 +43,7 @@ public class MyVolleyRequest {
                 Request.Method.GET,
                 url,
                 null,
-                response -> iVolley.onResponse(response), error -> Log.i("Error : ", error.getMessage()));
+                iVolley::onResponse, error -> Log.i("Error : ", error.getMessage()));
         addToRequestQueue(getRequest);
     }
 
