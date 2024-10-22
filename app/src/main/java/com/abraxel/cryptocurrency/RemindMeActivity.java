@@ -11,10 +11,6 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.abraxel.cryptocurrency.model.CryptoCurrencies;
-import com.abraxel.cryptocurrency.model.ReminderData;
-import com.google.firebase.firestore.FirebaseFirestore;
-
-import java.util.Locale;
 
 import nl.dionsegijn.steppertouch.StepperTouch;
 
@@ -25,7 +21,6 @@ public class RemindMeActivity extends AppCompatActivity {
     String coinNameFromBundle;
     double coinValueFromBundle;
 
-    private FirebaseFirestore fireStore;
 
 
     @Override
@@ -66,25 +61,7 @@ public class RemindMeActivity extends AppCompatActivity {
 
 
         setReminderButton.setOnClickListener(view -> {
-            if (valueSetter.getText() != null) {
-                ReminderData reminderData = new ReminderData();
-                fireStore = FirebaseFirestore.getInstance();
-                reminderData.setCoinName(coinNameFromBundle);
-                reminderData.setCurrentValue((int) coinValueFromBundle);
-                reminderData.setDesiredValue(Integer.parseInt(valueSetter.getText().toString()));
-                reminderData.setDeviceKey(MainActivity.TOKEN);
-                reminderData.setNotified(false);
-                if (reminderData.getDesiredValue() != reminderData.getCurrentValue()) {
-                    fireStore.collection(coinNameFromBundle.toLowerCase(Locale.ROOT))
-                            .document(MainActivity.TOKEN)
-                            .set(reminderData)
-                            .addOnSuccessListener(unused ->
-                                    Toast.makeText(getApplicationContext(), getString(R.string.reminder_set_successful), Toast.LENGTH_LONG).show()).addOnFailureListener(error ->
-                                    Toast.makeText(getApplicationContext(), getString(R.string.data_could_not_be_saved) + error.getMessage(), Toast.LENGTH_LONG).show());
-                } else {
-                    Toast.makeText(getApplicationContext(), getString(R.string.same_value_error), Toast.LENGTH_LONG).show();
-                }
-            }
+            Toast.makeText(this, "Reminder set for " + coinNameFromBundle, Toast.LENGTH_SHORT).show();
         });
 
         imageViewReminder.setImageResource((currencies.getLogoResourceId()));

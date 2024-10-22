@@ -2,7 +2,6 @@ package com.abraxel.cryptocurrency;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 
@@ -26,15 +25,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.android.gms.ads.AdListener;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdSize;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.LoadAdError;
-import com.google.android.gms.ads.MobileAds;
-import com.google.firebase.messaging.FirebaseMessaging;
 
-import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONException;
 
@@ -44,11 +35,9 @@ import java.util.logging.Logger;
 
 public class MainActivity extends AppCompatActivity {
     Logger logger = Logger.getLogger(MainActivity.class.getName());
-    public static String TOKEN;
 
     private RequestQueue requestQueue;
     private CurrencyAdapter currencyAdapter;
-    private AdView mAdView;
     public ProgressBar progressBar;
     List<CryptoCurrencies> cryptoCurrenciesList;
     MethodServer methodServer;
@@ -62,46 +51,6 @@ public class MainActivity extends AppCompatActivity {
         methodServer = new MethodServer(context);
         createNotificationChannel();
 
-
-        MobileAds.initialize(getApplicationContext(), initializationStatus -> {
-        });
-
-        mAdView = new AdView(this);
-        mAdView.setAdSize(AdSize.BANNER);
-        mAdView.setAdUnitId("ca-app-pub-2313560120112536/8127489925");
-
-        mAdView = findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
-
-        mAdView.setAdListener(new AdListener() {
-            @Override
-            public void onAdLoaded() {
-                // Code to be executed when an ad finishes loading.
-            }
-
-            @Override
-            public void onAdFailedToLoad(@NotNull LoadAdError adError) {
-                // Code to be executed when an ad request fails.
-            }
-
-            @Override
-            public void onAdOpened() {
-                // Code to be executed when an ad opens an overlay that
-                // covers the screen.
-            }
-
-            @Override
-            public void onAdClicked() {
-                // Code to be executed when the user clicks on an ad.
-            }
-
-            @Override
-            public void onAdClosed() {
-                // Code to be executed when the user is about to return
-                // to the app after tapping on an ad.
-            }
-        });
 
         SwipeRefreshLayout swipeRefreshLayout;
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
@@ -120,19 +69,6 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(currencyAdapter);
-
-
-        FirebaseMessaging.getInstance().getToken()
-                .addOnCompleteListener(task -> {
-                    final String TAG = "MainActivity";
-                    if (!task.isSuccessful()) {
-                        Log.w(TAG, "Fetching FCM registration token failed", task.getException());
-                    }
-                    TOKEN = task.getResult();
-
-                    // Log and toast
-                    Log.d(TAG, TOKEN);
-                });
 
 
         swipeRefreshLayout.setOnRefreshListener(() -> {
@@ -166,17 +102,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         return true;
-    }
-
-
-    @Override
-    public void onResume() {
-
-        super.onResume();
-        if (mAdView != null) {
-            AdRequest adRequest = new AdRequest.Builder().build();
-            mAdView.loadAd(adRequest);
-        }
     }
 
     public List<CryptoCurrencies> callRest() {

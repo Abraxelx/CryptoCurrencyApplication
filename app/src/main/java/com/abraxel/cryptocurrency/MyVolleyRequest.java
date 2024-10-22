@@ -1,6 +1,5 @@
 package com.abraxel.cryptocurrency;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
 import com.abraxel.cryptocurrency.interfaces.IVolley;
@@ -9,9 +8,9 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
+import java.util.Objects;
+
 public class MyVolleyRequest {
-    @SuppressLint("StaticFieldLeak")
-    private static MyVolleyRequest mInstance;
     private RequestQueue requestQueue;
     private final Context context;
     private final IVolley iVolley;
@@ -24,8 +23,7 @@ public class MyVolleyRequest {
 
 
     public static synchronized MyVolleyRequest getInstance(Context context, IVolley iVolley) {
-        mInstance = new MyVolleyRequest(context, iVolley);
-        return mInstance;
+        return new MyVolleyRequest(context, iVolley);
     }
 
     private RequestQueue getRequestQueue(Context context) {
@@ -43,7 +41,7 @@ public class MyVolleyRequest {
                 Request.Method.GET,
                 url,
                 null,
-                iVolley::onResponse, error -> Log.i("Error : ", error.getMessage()));
+                iVolley::onResponse, error -> Log.i("Error : ", Objects.requireNonNull(error.getMessage())));
         addToRequestQueue(getRequest);
     }
 

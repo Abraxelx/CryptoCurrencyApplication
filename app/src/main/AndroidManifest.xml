@@ -12,7 +12,11 @@
         android:roundIcon="@mipmap/ic_launcher_btc"
         tools:replace="android:icon"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:enableOnBackInvokedCallback="true"
+        android:theme="@style/AppTheme"
+        tools:targetApi="tiramisu">
+
+        <!-- Activities -->
         <activity
             android:name=".RemindMeActivity"
             android:exported="false" />
@@ -26,28 +30,7 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity> <!-- Sample AdMob app ID: ca-app-pub-3940256099942544~3347511713 -->
-        <receiver android:name=".adapter.ReminderBroadcast" />
+        </activity>
 
-        <service
-            android:name=".messaging.CurrencyMessagingService"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT" />
-            </intent-filter>
-        </service>
-
-        <meta-data
-            android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-2313560120112536~7960865514" />
-        <!-- Set custom default icon. This is used when no icon is set for incoming notification messages. -->
-        <meta-data
-            android:name="com.google.firebase.messaging.default_notification_icon"
-            android:resource="@drawable/ic_stat_monetization_on" />
-        <!-- Set color used with incoming notification messages. This is used when no color is set for the incoming notification message. -->
-        <meta-data
-            android:name="com.google.firebase.messaging.default_notification_color"
-            android:resource="@color/colorAccent" />
     </application>
-
 </manifest>

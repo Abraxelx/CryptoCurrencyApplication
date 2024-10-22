@@ -5,11 +5,11 @@ import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
-import android.window.OnBackInvokedDispatcher;
 
 import com.abraxel.cryptocurrency.constants.Constants;
 import com.abraxel.cryptocurrency.formatter.LineChartXAxisFormatter;
@@ -33,13 +33,15 @@ import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.logging.Logger;
 
 public class ChartDataActivity extends AppCompatActivity {
+    private Logger logger = Logger.getLogger(ChartDataActivity.class.getName());
 
     private LineChart lineChart;
     private TextView coinNameReminder;
     private final List<Entry> lineList = new ArrayList<>();
-    private final static String trying = "Değişim Trendi";
     private static RequestQueue requestQueue;
     protected static List<ChartData> chartDataList = new ArrayList<>();
 
@@ -49,9 +51,19 @@ public class ChartDataActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chart_data);
         getVolleyResponse();
-        this.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(this.getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         lineChart = findViewById(R.id.line_chart);
         coinNameReminder = findViewById(R.id.remind_coin_name);
+
+        OnBackPressedCallback callback = new OnBackPressedCallback(true) {
+
+            @Override
+            public void handleOnBackPressed() {
+                clearChartData();
+                finish();
+            }
+        };
+        getOnBackPressedDispatcher().addCallback(this, callback);
 
     }
 
@@ -80,10 +92,12 @@ public class ChartDataActivity extends AppCompatActivity {
                             lineList.add(new Entry(chartData.getTimeStamp(), formattedVal));
 
                         }
-                        drawLineChart(lineList, getCoinName());
+                        if (!lineList.isEmpty()) {
+                            drawLineChart(lineList, getCoinName());
+                        }
 
                     } catch (JSONException e) {
-                        e.printStackTrace();
+                        logger.severe(e.getMessage());
                     }
                 },
                 error -> Toast.makeText(getApplicationContext(), "ERROR", Toast.LENGTH_LONG).show());
@@ -93,17 +107,11 @@ public class ChartDataActivity extends AppCompatActivity {
     }
 
 
-    @Override
-    public void onBackPressed() {
-        clearChartDatas();
-        super.onBackPressed();
-    }
-
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            clearChartDatas();
+            clearChartData();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -126,7 +134,7 @@ public class ChartDataActivity extends AppCompatActivity {
     private void drawLineChart(List<Entry> lineList, String coinName) {
         coinNameReminder.setText(coinNameFormatter(coinName));
         Description description = new Description();
-        description.setText(trying);
+        description.setText(Constants.CHANGE_TREND);
         lineChart.setDescription(description);
         lineChart.getXAxis().setValueFormatter(new LineChartXAxisFormatter());
         LineDataSet lineDataSet = new LineDataSet(lineList, coinNameFormatter(coinName) + " 7 Günlük Değişim Grafiği");
@@ -159,12 +167,16 @@ public class ChartDataActivity extends AppCompatActivity {
         return (float) chartData.getCost();
     }
 
-    private void clearChartDatas() {
+    private void clearChartData() {
         lineList.clear();
         chartDataList.clear();
-        lineChart.invalidate();
-        lineChart.getLineData().clearValues();
-        lineChart.clear();
+
+        if (lineChart != null) {
+            lineChart.clear();
+            lineChart.invalidate();
+        }
     }
+
+
 
 }
