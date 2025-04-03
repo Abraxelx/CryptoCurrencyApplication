@@ -4,6 +4,11 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import androidx.cardview.widget.CardView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,6 +21,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.app.SearchManager;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -39,6 +45,8 @@ public class MainActivity extends AppCompatActivity {
     private RequestQueue requestQueue;
     private CurrencyAdapter currencyAdapter;
     public ProgressBar progressBar;
+    private CardView loadingContainer;
+    private TextView errorMessage;
     List<CryptoCurrencies> cryptoCurrenciesList;
     MethodServer methodServer;
 
@@ -55,6 +63,8 @@ public class MainActivity extends AppCompatActivity {
         SwipeRefreshLayout swipeRefreshLayout;
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
         progressBar = findViewById(R.id.progress_circular);
+        loadingContainer = findViewById(R.id.loading_container);
+        errorMessage = findViewById(R.id.error_message);
         requestQueue = Volley.newRequestQueue(this);
 
 
@@ -72,12 +82,82 @@ public class MainActivity extends AppCompatActivity {
 
 
         swipeRefreshLayout.setOnRefreshListener(() -> {
-            List<CryptoCurrencies> cryptoCurrenciesList = callRest();
-            currencyAdapter = new CurrencyAdapter(cryptoCurrenciesList, getApplicationContext());
-            recyclerView.setAdapter(currencyAdapter);
-            currencyAdapter.notifyDataSetChanged();
-            swipeRefreshLayout.setRefreshing(false);
+            showLoading(true);
+            final String URL = "https://api.btcturk.com/api/v2/ticker";
+            
+            final List<CryptoCurrencies> newList = new ArrayList<>();
+            
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                    Request.Method.GET,
+                    URL,
+                    null,
+                    response -> {
+                        try {
+                            JSONArray data = response.getJSONArray("data");
+                            methodServer.cryptoSetter(data, newList);
+                            
+                            runOnUiThread(() -> {
+                                cryptoCurrenciesList.clear();
+                                cryptoCurrenciesList.addAll(newList);
+                                
+                                currencyAdapter.notifyDataSetChanged();
+                                showLoading(false);
+                                swipeRefreshLayout.setRefreshing(false);
+                            });
+                        } catch (JSONException e) {
+                            logger.warning(e.getMessage());
+                            runOnUiThread(() -> {
+                                showError("Veri işlenirken bir hata oluştu: " + e.getMessage());
+                                showLoading(false);
+                                swipeRefreshLayout.setRefreshing(false);
+                            });
+                        }
+                    },
+                    error -> {
+                        runOnUiThread(() -> {
+                            showError("Veri yüklenirken bir hata oluştu. Lütfen internet bağlantınızı kontrol edin.");
+                            showLoading(false);
+                            swipeRefreshLayout.setRefreshing(false);
+                        });
+                    });
+            jsonObjectRequest.setTag("T");
+            requestQueue.add(jsonObjectRequest);
         });
+    }
+
+    // Yükleme göstergesini göster/gizle
+    private void showLoading(boolean show) {
+        if (show) {
+            loadingContainer.setVisibility(View.VISIBLE);
+        } else {
+            loadingContainer.setVisibility(View.GONE);
+        }
+    }
+
+    // Hata mesajını göster
+    private void showError(String message) {
+        errorMessage.setText(message);
+        errorMessage.setVisibility(View.VISIBLE);
+        
+        // Hata mesajını 5 saniye sonra gizle
+        new Handler().postDelayed(() -> {
+            // Yumuşak bir geçişle kaybolması için animasyon ekleyelim
+            AlphaAnimation fadeOut = new AlphaAnimation(1.0f, 0.0f);
+            fadeOut.setDuration(500);
+            fadeOut.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {}
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    errorMessage.setVisibility(View.GONE);
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {}
+            });
+            errorMessage.startAnimation(fadeOut);
+        }, 5000);
     }
 
     @Override
@@ -105,9 +185,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public List<CryptoCurrencies> callRest() {
-
-        progressBar.setVisibility(View.VISIBLE);
-        requestQueue = Volley.newRequestQueue(getApplicationContext());
+        showLoading(true);
         final List<CryptoCurrencies> ccList = new ArrayList<>();
 
         final String URL = "https://api.btcturk.com/api/v2/ticker";
@@ -121,12 +199,17 @@ public class MainActivity extends AppCompatActivity {
                         methodServer.cryptoSetter(data, ccList);
                     } catch (JSONException e) {
                         logger.warning(e.getMessage());
-                        progressBar.setVisibility(View.GONE);
+                        showError("Veri işlenirken bir hata oluştu: " + e.getMessage());
+                        showLoading(false);
+                        return;
                     }
                     currencyAdapter.notifyDataSetChanged();
-                    progressBar.setVisibility(View.GONE);
+                    showLoading(false);
                 },
-                error -> progressBar.setVisibility(View.GONE));
+                error -> {
+                    showError("Veri yüklenirken bir hata oluştu. Lütfen internet bağlantınızı kontrol edin.");
+                    showLoading(false);
+                });
         jsonObjectRequest.setTag("T");
         requestQueue.add(jsonObjectRequest);
         return ccList;
