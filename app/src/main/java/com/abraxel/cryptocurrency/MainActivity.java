@@ -26,6 +26,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.abraxel.cryptocurrency.adapter.CurrencyAdapter;
+import com.abraxel.cryptocurrency.constants.Constants;
 import com.abraxel.cryptocurrency.model.CryptoCurrencies;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -47,49 +48,81 @@ public class MainActivity extends AppCompatActivity {
     public ProgressBar progressBar;
     private CardView loadingContainer;
     private TextView errorMessage;
-    List<CryptoCurrencies> cryptoCurrenciesList;
-    MethodServer methodServer;
+    private List<CryptoCurrencies> cryptoCurrenciesList;
+    private MethodServer methodServer;
+    private SwipeRefreshLayout swipeRefreshLayout;
+    private RecyclerView recyclerView;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        
+        // İlk kurulumları yap
+        initializeVariables();
+        
+        // Bildirim kanalını oluştur
+        createNotificationChannel();
+        
+        // RecyclerView'ı kur
+        setupRecyclerView();
+        
+        // SwipeRefreshLayout'ı kur
+        setupSwipeRefreshLayout();
+    }
+    
+    /**
+     * Değişkenleri ve temel bileşenleri başlatır
+     */
+    private void initializeVariables() {
         Context context = getApplicationContext();
         methodServer = new MethodServer(context);
-        createNotificationChannel();
-
-
-        SwipeRefreshLayout swipeRefreshLayout;
+        
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
         progressBar = findViewById(R.id.progress_circular);
         loadingContainer = findViewById(R.id.loading_container);
         errorMessage = findViewById(R.id.error_message);
+        recyclerView = findViewById(R.id.recycleView);
+        
+        // RequestQueue'yu bir kez oluştur
         requestQueue = Volley.newRequestQueue(this);
-
-
+        
+        // Veri listesini başlat
         cryptoCurrenciesList = callRest();
+    }
+    
+    /**
+     * RecyclerView'ı kurar
+     */
+    private void setupRecyclerView() {
         currencyAdapter = new CurrencyAdapter(cryptoCurrenciesList, getApplicationContext());
+        
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        RecyclerView recyclerView;
-        recyclerView = findViewById(R.id.recycleView);
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), linearLayoutManager.getOrientation());
+        
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(
+                recyclerView.getContext(), 
+                linearLayoutManager.getOrientation());
+                
         recyclerView.addItemDecoration(dividerItemDecoration);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(currencyAdapter);
-
-
+    }
+    
+    /**
+     * SwipeRefreshLayout'ı kurar
+     */
+    private void setupSwipeRefreshLayout() {
         swipeRefreshLayout.setOnRefreshListener(() -> {
             showLoading(true);
-            final String URL = "https://api.btcturk.com/api/v2/ticker";
             
             final List<CryptoCurrencies> newList = new ArrayList<>();
             
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                     Request.Method.GET,
-                    URL,
+                    Constants.API_URL,
                     null,
                     response -> {
                         try {
@@ -107,7 +140,7 @@ public class MainActivity extends AppCompatActivity {
                         } catch (JSONException e) {
                             logger.warning(e.getMessage());
                             runOnUiThread(() -> {
-                                showError("Veri işlenirken bir hata oluştu: " + e.getMessage());
+                                showError(Constants.ERROR_DATA_PROCESSING + e.getMessage());
                                 showLoading(false);
                                 swipeRefreshLayout.setRefreshing(false);
                             });
@@ -115,12 +148,12 @@ public class MainActivity extends AppCompatActivity {
                     },
                     error -> {
                         runOnUiThread(() -> {
-                            showError("Veri yüklenirken bir hata oluştu. Lütfen internet bağlantınızı kontrol edin.");
+                            showError(Constants.ERROR_DATA_LOADING);
                             showLoading(false);
                             swipeRefreshLayout.setRefreshing(false);
                         });
                     });
-            jsonObjectRequest.setTag("T");
+            jsonObjectRequest.setTag(Constants.REQUEST_TAG);
             requestQueue.add(jsonObjectRequest);
         });
     }
@@ -167,7 +200,7 @@ public class MainActivity extends AppCompatActivity {
         MenuItem searchItem = menu.findItem(R.id.action_search);
         SearchView searchView = (SearchView) searchItem.getActionView();
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-        searchView.setQueryHint("ARA");
+        searchView.setQueryHint(Constants.SEARCH_HINT);
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -188,10 +221,9 @@ public class MainActivity extends AppCompatActivity {
         showLoading(true);
         final List<CryptoCurrencies> ccList = new ArrayList<>();
 
-        final String URL = "https://api.btcturk.com/api/v2/ticker";
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                 Request.Method.GET,
-                URL,
+                Constants.API_URL,
                 null,
                 response -> {
                     try {
@@ -199,7 +231,7 @@ public class MainActivity extends AppCompatActivity {
                         methodServer.cryptoSetter(data, ccList);
                     } catch (JSONException e) {
                         logger.warning(e.getMessage());
-                        showError("Veri işlenirken bir hata oluştu: " + e.getMessage());
+                        showError(Constants.ERROR_DATA_PROCESSING + e.getMessage());
                         showLoading(false);
                         return;
                     }
@@ -207,10 +239,10 @@ public class MainActivity extends AppCompatActivity {
                     showLoading(false);
                 },
                 error -> {
-                    showError("Veri yüklenirken bir hata oluştu. Lütfen internet bağlantınızı kontrol edin.");
+                    showError(Constants.ERROR_DATA_LOADING);
                     showLoading(false);
                 });
-        jsonObjectRequest.setTag("T");
+        jsonObjectRequest.setTag(Constants.REQUEST_TAG);
         requestQueue.add(jsonObjectRequest);
         return ccList;
     }
@@ -219,22 +251,20 @@ public class MainActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         if (requestQueue != null) {
-            requestQueue.cancelAll("T");
+            requestQueue.cancelAll(Constants.REQUEST_TAG);
         }
     }
 
     private void createNotificationChannel() {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            CharSequence name = "abraxelReminderChannel";
-            String description = "Channel for Kripto Para";
-            int importance = NotificationManager.IMPORTANCE_HIGH;
-            NotificationChannel channel;
-            channel = new NotificationChannel("cryptocurrency", name, importance);
-            channel.setDescription(description);
+            NotificationChannel channel = new NotificationChannel(
+                    Constants.NOTIFICATION_CHANNEL_ID,
+                    Constants.NOTIFICATION_CHANNEL_NAME,
+                    NotificationManager.IMPORTANCE_HIGH);
+            channel.setDescription(Constants.NOTIFICATION_CHANNEL_DESC);
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
         }
     }
-
 }
 

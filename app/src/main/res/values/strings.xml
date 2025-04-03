@@ -28,4 +28,10 @@
     <string name="reminder_set_successful">Hatırlatıcı Başarıyla Kuruldu :)</string>
     <string name="data_could_not_be_saved">Veri Kaydedilemedi!</string>
     <string name="same_value_error">Bildirim gönderilmesi istenen değer, güncel değer ile aynı olamaz.</string>
+    
+    <!-- Yeni Eklenen Metinler -->
+    <string name="loading_message">Yükleniyor...</string>
+    <string name="error_data_processing">Veri işlenirken bir hata oluştu: </string>
+    <string name="error_data_loading">Veri yüklenirken bir hata oluştu. Lütfen internet bağlantınızı kontrol edin.</string>
+    <string name="search_hint">ARA</string>
 </resources>

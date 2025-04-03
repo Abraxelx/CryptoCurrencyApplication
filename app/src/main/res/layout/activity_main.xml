@@ -40,7 +40,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="Yükleniyor..."
+                android:text="@string/loading_message"
                 android:textColor="#FFFFFF"
                 android:textSize="16sp" />
         </LinearLayout>
