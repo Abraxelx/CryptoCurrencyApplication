@@ -34,4 +34,11 @@
     <string name="error_data_processing">Veri işlenirken bir hata oluştu: </string>
     <string name="error_data_loading">Veri yüklenirken bir hata oluştu. Lütfen internet bağlantınızı kontrol edin.</string>
     <string name="search_hint">ARA</string>
+    
+    <!-- WebSocket Durum Metinleri -->
+    <string name="websocket_connected">Gerçek zamanlı veri akışı aktif</string>
+    <string name="websocket_disconnected">Gerçek zamanlı veri akışı kesildi</string>
+    <string name="websocket_connecting">Bağlantı kuruluyor…</string>
+    <string name="websocket_error">Bağlantı hatası</string>
+    <string name="reconnect">Yeniden Bağlan</string>
 </resources>
